@@ -215,8 +215,8 @@ namespace DxConvolutionTest
 
             sb.AppendLine(
                 """
-                Texture2D srcTexture;
-                SamplerState PointSampler;
+                Texture2D    _texture;
+                SamplerState _sampler;
 
                 struct vs_in 
                 {
@@ -250,7 +250,7 @@ namespace DxConvolutionTest
                 {
                     sb.AppendLine(
                         $"""
-                            result = result + srcTexture.Sample(PointSampler, float2((input.position.x + {x}) / {inputWidth}, (input.position.y + {y}) / {inputHeight}));
+                            result = result + _texture.Sample(_sampler, float2((input.position.x + {x}) / {inputWidth}, (input.position.y + {y}) / {inputHeight}));
                         """);
                 }
             }

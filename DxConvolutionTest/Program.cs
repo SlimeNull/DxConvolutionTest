@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml.Linq;
@@ -18,9 +19,18 @@ namespace DxConvolutionTest
             var inputBitmapBytes = File.ReadAllBytes("test.png");
             SKBitmap bitmap = SKBitmap.Decode(inputBitmapBytes);
 
-            DxBlur blur = new DxBlur(bitmap.Width, bitmap.Height, 20, 0.5f, 0.5f, 0.5f);
+            DxBlur blur = new DxBlur(bitmap.Width, bitmap.Height, 5, 0.5f, 0.5f, 0.5f);
             SKBitmap outputBitmap = new SKBitmap(blur.OutputWidth, blur.OutputHeight, SKColorType.Bgra8888, SKAlphaType.Unpremul);
-            blur.Process(bitmap.GetPixelSpan(), outputBitmap.GetPixelSpan());
+
+            Stopwatch stopwatch = new Stopwatch();
+            for (int i = 0; i < 100; i++)
+            {
+                stopwatch.Restart();
+                blur.Process(bitmap.GetPixelSpan(), outputBitmap.GetPixelSpan());
+                stopwatch.Stop();
+
+                Console.WriteLine($"Elapsed: {stopwatch.ElapsedMilliseconds}ms");
+            }
 
             using var outputFile = File.Create("output.png");
             outputBitmap.Encode(outputFile, SKEncodedImageFormat.Png, 1);
