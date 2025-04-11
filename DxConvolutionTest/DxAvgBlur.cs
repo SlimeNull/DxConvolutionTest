@@ -12,7 +12,7 @@ using Silk.NET.DXGI;
 
 namespace DxConvolutionTest
 {
-    public unsafe class DxBlur
+    public unsafe class DxAvgBlur : IImageBlurProcessor
     {
         D3D11 _api;
         D3DCompiler _compiler;
@@ -37,9 +37,8 @@ namespace DxConvolutionTest
         public int OutputHeight { get; }
         public int BlurSize { get; }
 
-        public DxBlur(
-            int inputWidth, int inputHeight, int blurSize,
-            float backgroundR, float backgroundG, float backgroundB)
+        public DxAvgBlur(
+            int inputWidth, int inputHeight, int blurSize)
         {
             if (blurSize < 1)
             {
@@ -56,8 +55,8 @@ namespace DxConvolutionTest
                 throw new ArgumentOutOfRangeException(nameof(inputHeight));
             }
 
-            int outputWidth = inputWidth - blurSize;
-            int outputHeight = inputHeight - blurSize;
+            int outputWidth = inputWidth - blurSize + 1;
+            int outputHeight = inputHeight - blurSize + 1;
 
             _api = D3D11.GetApi(null, false);
             _compiler = D3DCompiler.GetApi();
@@ -196,9 +195,9 @@ namespace DxConvolutionTest
 
             _background = new float[]
             {
-                backgroundR,
-                backgroundG,
-                backgroundB,
+                0,
+                0,
+                0,
                 1.0f
             };
 
